@@ -48,18 +48,18 @@ class Control:
             # 遍历规则库
             while True:
                 for r in rules:  # r代表一个规则对象
-                    if r.get_is_use() == 0:
+                    if r.get_is_use() == 0 and check.check_rule2(facts, r.get_Result()) == 1:
                         r.set_is_use(1)  # 匹配成功，标注该规则已匹配过
-                        if check.check_rule1(facts, r.get_condition()) == 1:
-                            facts.append(r.get_Result())  # 将结论加入事实库
-                            condition = r.get_condition()  # 获取规则r的前提条件
-                            # 保存中间推理过程，列表
-                            temp = []
-                            temp.extend(condition)
-                            temp.append(r.get_Result())
-                            ans.append(temp)
-                            flag1 = 1
-                            break  # 每一次匹配到一个规则后，讲结论加入事实库，break跳出for循环
+
+                        facts.append(r.get_Result())  # 将结论加入事实库
+                        condition = r.get_condition()  # 获取规则r的前提条件
+                        # 保存中间推理过程，列表
+                        temp = []
+                        temp.extend(condition)
+                        temp.append(r.get_Result())
+                        ans.append(temp)
+                        flag1 = 1
+                        break  # 每一次匹配到一个规则后，讲结论加入事实库，break跳出for循环
                 if flag1 == 0:  # for循环结束，flag1仍为0，说明没有一条规则匹配，故
                     break
                 flag1 = 0  # 再令flag1=0，开始新一轮的for循环遍历规则库，继续推理，比如第一轮遍历推出是车，然后将车加入事实库
@@ -114,17 +114,18 @@ class Control:
             # 遍历规则库
             while True:
                 for r in rules:  # r代表一个规则对象
-                    if r.get_is_use() == 0:
+                    if r.get_is_use() == 0 and check.check_rule2(facts, r.get_Result()) == 1:
                         r.set_is_use(1)  # 匹配成功，标注该规则已匹配过
-                        if check.check_rule2(facts, r.get_Result()) == 1:
-                            condition = r.get_condition()
-                            facts.extend(condition)
-                            # 保存中间推理过程，列表
-                            temp = [r.get_Result()]
-                            temp.extend(condition)
-                            ans.append(temp)
-                            flag1 = 1  # flag=1表明已匹配成功
-                            break  # 每一次匹配到一个规则后，将结论加入事实库，break跳出for循环
+
+                        condition = r.get_condition()
+                        facts.extend(condition)
+                        # 保存中间推理过程，列表
+                        temp = []
+                        temp.append(r.get_Result())
+                        temp.extend(condition)
+                        ans.append(temp)
+                        flag1 = 1  # flag=1表明已匹配成功
+                        break  # 每一次匹配到一个规则后，将结论加入事实库，break跳出for循环
                 if flag1 == 0:  # for循环结束，flag1仍为0，说明没有一条规则匹配，故跳出while循环，返回空的ans
                     break
                 flag1 = 0  # 再令flag1=0，开始新一轮的for循环遍历规则库

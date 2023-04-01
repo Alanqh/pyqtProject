@@ -111,6 +111,7 @@ class Window:
 
     # 正向推理函数
     def forward_inference(self):
+        self.t.delete(1.0, 'end')
         self.add_record()
         a = Control()
         ans = a.identify1()  # 推理过程函数，ans返回结论
@@ -135,6 +136,7 @@ class Window:
 
     # 逆向推理函数
     def backward_inference(self):
+        self.t.delete(1.0, 'end')
         self.add_record()
         a = Control()
         ans = a.identify2()  # 推理过程函数，ans返回结论
