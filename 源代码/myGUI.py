@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import scrolledtext
+from ttkbootstrap import Style
 
 from Features import Feature
 from Rules import Rule
@@ -10,6 +11,7 @@ from control import Control
 
 class Window:
     def __init__(self, root):
+
         # 创建主窗口
         self.root = root
         self.root.title("动物识别系统")
@@ -22,7 +24,7 @@ class Window:
         label_input = tk.Label(root, text="请输入结果或事实:")
         label_input.grid(row=0, column=0, padx=10, pady=10)
 
-        self.entry_input = tk.Entry(root, width=30, fg="gray")
+        self.entry_input = tk.Entry(root, width=40, fg="gray")
         self.entry_input.insert(0, "请输入结果或事实，例如：有翅膀/鸟类")
         self.entry_input.grid(row=1, column=1, padx=10, pady=10)
         self.entry_input.bind("<FocusIn>", lambda event: self.on_entry_click(self.entry_input))
@@ -43,13 +45,13 @@ class Window:
 
         # 创建按钮
         button_forward = tk.Button(root, text="正向推理", command=self.forward_inference)
-        button_forward.grid(row=0, column=2, padx=10, pady=10)
+        button_forward.grid(row=2, column=2, padx=10, pady=10)
 
         button_backward = tk.Button(root, text="逆向推理", command=self.backward_inference)
-        button_backward.grid(row=0, column=3, padx=10, pady=10)
+        button_backward.grid(row=2, column=3, padx=10, pady=10)
 
         button_view = tk.Button(root, text="查看规则", command=self.view_rules)
-        button_view.grid(row=2, column=3, padx=10, pady=10)
+        button_view.grid(row=0, column=2, padx=10, pady=10)
 
         button_delete = tk.Button(root, text="删除规则", command=self.delete_window)
         button_delete.grid(row=1, column=3, padx=10, pady=10)
@@ -58,10 +60,10 @@ class Window:
         button_modify.grid(row=1, column=2, padx=10, pady=10)
 
         button_add = tk.Button(root, text="添加规则", command=self.add_window)
-        button_add.grid(row=2, column=2, padx=10, pady=10)
+        button_add.grid(row=0, column=3, padx=10, pady=10)
 
-        button_clear = tk.Button(root, text="一键清空", command=self.clear_all)
-        button_clear.grid(row=2, column=0, padx=10, pady=10)
+        button_clear = tk.Button(root, text="一键清空", width=40, command=self.clear_all)
+        button_clear.grid(row=2, column=1, padx=10, pady=10)
 
     # 定义输入框默认文本的清空函数
     def on_entry_click(self, entry):
@@ -171,9 +173,6 @@ class Window:
                             self.t.insert('end', ans[i][j] + '+')
                         else:
                             self.t.insert('end', ans[i][j])  # 最后一个事实不需要再加'+'
-
-
-
 
     # 查看规则函数
     def view_rules(self):
@@ -345,7 +344,11 @@ class Window:
             self.entry_input.delete(0, "end")
         self.t.delete('1.0', tk.END)
 
-
-window = tk.Tk()
+style = Style(theme='sandstone')
+# 切换主题，修改theme值即可:
+# ['vista', 'classic', 'cyborg', 'journal', 'darkly', 'flatly', 'clam']
+# ['alt', 'solar', 'minty', 'litera', 'united', 'xpnative', 'pulse']
+# ['cosmo', 'lumen', 'yeti', 'superhero', 'winnative', 'sandstone', 'default']
+window = style.master
 Window(window)
 window.mainloop()
