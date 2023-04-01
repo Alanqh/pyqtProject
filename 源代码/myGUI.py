@@ -106,7 +106,7 @@ class Window:
                 db.commit()  # 将操作提交到数据库中，否则数据库中数据不改变，增删改等sql语句后都要加这个方法
                 cursor.close()
             except Exception as e:
-                print("添加事实出错！")
+                print("添加事实出错！！！")
                 # 发生错误时回滚
                 db.rollback()
                 print("执行MySQL: %s 时出错：%s" % (sql, e))
