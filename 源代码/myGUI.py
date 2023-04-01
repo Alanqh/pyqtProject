@@ -21,11 +21,11 @@ class Window:
         root.geometry(align_str)
 
         # 创建输入框
-        label_input = tk.Label(root, text="请输入结果或事实:")
+        label_input = tk.Label(root, text="请按照示例的格式输入事实:")
         label_input.grid(row=0, column=0, padx=10, pady=10)
 
         self.entry_input = tk.Entry(root, width=40, fg="gray")
-        self.entry_input.insert(0, "请输入结果或事实，例如：有翅膀/鸟类")
+        self.entry_input.insert(0, "有奶/吃肉")
         self.entry_input.grid(row=1, column=1, padx=10, pady=10)
         self.entry_input.bind("<FocusIn>", lambda event: self.on_entry_click(self.entry_input))
 
@@ -67,7 +67,7 @@ class Window:
 
     # 定义输入框默认文本的清空函数
     def on_entry_click(self, entry):
-        if entry.get() == "请输入结果或事实，例如：有翅膀/鸟类":
+        if entry.get() == "有奶/吃肉":
             entry.delete(0, "end")
             entry.config(fg="black")
 
@@ -98,7 +98,7 @@ class Window:
         max_id = cursor.fetchone()[0]  # 获取当前的最大ID
         max_id += 1
         # 将事实加入综合数据库
-        if self.entry_input.get() != '':
+        if self.entry_input.get() != '' :
             sql = "INSERT INTO RECORD(RE_ID, FACT) \
                                         VALUES (%d,'%s')" % (max_id, self.entry_input.get())
             try:
@@ -114,65 +114,71 @@ class Window:
     # 正向推理函数
     def forward_inference(self):
         self.t.delete(1.0, 'end')
-        self.add_record()
-        a = Control()
-        ans = a.identify1()  # 推理过程函数，ans返回结论
-        if not ans:
-            self.t.insert('end', "无法识别！！！" + '\n')
+        if self.entry_input.get() == '':
+            messagebox.showerror(title="输入为空！", message="请输入后在进行推理！")
         else:
-            # lens_ans表示结论个数
-            lens_ans = len(ans)
-            for i in range(lens_ans):  # for i in range(2) 则i值为0,1
-                if i != lens_ans - 1:
-                    self.t.insert('end', "推理得到的中间结果：")
-                else:
-                    self.t.insert('end', "推理得到的最终结果：")
-                lens_temp = len(ans[i])  # 每个结论列表的长度
-                for j in range(lens_temp):  # 遍历结论列表中的每一项
-                    if j == 0:  # 第一项直接输出
-                        self.t.insert('end', ans[i][j])
-                    elif j != lens_temp - 1:  # 后面的特征
-                        self.t.insert('end', "+" + ans[i][j])
-                    else:  # 输出结果，签名加上-->
-                        self.t.insert('end', "-->" + ans[i][j] + '\n')
+            self.add_record()
+            a = Control()
+            ans = a.identify1()  # 推理过程函数，ans返回结论
+            if not ans:
+                self.t.insert('end', "无法识别！！！" + '\n')
+            else:
+                # lens_ans表示结论个数
+                lens_ans = len(ans)
+                for i in range(lens_ans):  # for i in range(2) 则i值为0,1
+                    if i != lens_ans - 1:
+                        self.t.insert('end', "推理得到的中间结果：")
+                    else:
+                        self.t.insert('end', "推理得到的最终结果：")
+                    lens_temp = len(ans[i])  # 每个结论列表的长度
+                    for j in range(lens_temp):  # 遍历结论列表中的每一项
+                        if j == 0:  # 第一项直接输出
+                            self.t.insert('end', ans[i][j])
+                        elif j != lens_temp - 1:  # 后面的特征
+                            self.t.insert('end', "+" + ans[i][j])
+                        else:  # 输出结果，签名加上-->
+                            self.t.insert('end', "-->" + ans[i][j] + '\n')
 
     # 逆向推理函数
     def backward_inference(self):
         self.t.delete(1.0, 'end')
-        self.add_record()
-        a = Control()
-        ans = a.identify2()  # 推理过程函数，ans返回结论
-        if not ans:
-            self.t.insert('end', "无法识别！！！" + '\n')
+        if self.entry_input.get() == '':
+            messagebox.showerror(title="输入为空！", message="请输入后在进行推理！")
         else:
-            # lens_ans表示结论个数，ans是一个列表，里面装个各个结论列表
-            lens_ans = len(ans)
-            for i in range(lens_ans):  # for i in range(2) 则i值为0,1
-                if lens_ans == 1:
-                    break
-                self.t.insert('end', "推理得到的中间结果：")
-                lens_temp = len(ans[i])  # 每个结论（列表）的长度
-                for j in range(lens_temp):  # 遍历结论列表中的每一项
-                    if j == 0:  # 第一项直接输出
-                        self.t.insert('end', ans[i][j] + "-->")
-                    elif j != lens_temp - 1:  # 后面的特征
-                        self.t.insert('end', ans[i][j] + "+")
-                    else:  # 输出结果，前面加上-->
-                        self.t.insert('end', ans[i][j] + '\n')
-            self.t.insert('end', "推理得到的最终结果：")
-            self.t.insert('end', ans[0][0] + "-->")
-            result = []  # 建立一个结果的列表
-            for i in range(lens_ans):
-                result.append(ans[i][0])  # 它存放了所有可以进一步分解的事实
-            # print(result)
-            for i in range(lens_ans):
-                lens_temp = len(ans[i])  # 保存每一条结论的字段数
-                for j in range(lens_temp):  # 遍历每一条结论的每一个字段
-                    if ans[i][j] not in result:  # 剔除掉可以进一步分解的事实
-                        if i != lens_ans - 1 or j != lens_temp - 1:  # 如果不是最后一个，输出该事实 + '+'
-                            self.t.insert('end', ans[i][j] + '+')
-                        else:
-                            self.t.insert('end', ans[i][j])  # 最后一个事实不需要再加'+'
+            self.add_record()
+            a = Control()
+            ans = a.identify2()  # 推理过程函数，ans返回结论
+            if not ans:
+                self.t.insert('end', "无法识别！！！" + '\n')
+            else:
+                # lens_ans表示结论个数，ans是一个列表，里面装个各个结论列表
+                lens_ans = len(ans)
+                for i in range(lens_ans):  # for i in range(2) 则i值为0,1
+                    if lens_ans == 1:
+                        break
+                    self.t.insert('end', "推理得到的中间结果：")
+                    lens_temp = len(ans[i])  # 每个结论（列表）的长度
+                    for j in range(lens_temp):  # 遍历结论列表中的每一项
+                        if j == 0:  # 第一项直接输出
+                            self.t.insert('end', ans[i][j] + "-->")
+                        elif j != lens_temp - 1:  # 后面的特征
+                            self.t.insert('end', ans[i][j] + "+")
+                        else:  # 输出结果，前面加上-->
+                            self.t.insert('end', ans[i][j] + '\n')
+                self.t.insert('end', "推理得到的最终结果：")
+                self.t.insert('end', ans[0][0] + "-->")
+                result = []  # 建立一个结果的列表
+                for i in range(lens_ans):
+                    result.append(ans[i][0])  # 它存放了所有可以进一步分解的事实
+                # print(result)
+                for i in range(lens_ans):
+                    lens_temp = len(ans[i])  # 保存每一条结论的字段数
+                    for j in range(lens_temp):  # 遍历每一条结论的每一个字段
+                        if ans[i][j] not in result:  # 剔除掉可以进一步分解的事实
+                            if i != lens_ans - 1 or j != lens_temp - 1:  # 如果不是最后一个，输出该事实 + '+'
+                                self.t.insert('end', ans[i][j] + '+')
+                            else:
+                                self.t.insert('end', ans[i][j])  # 最后一个事实不需要再加'+'
 
     # 查看规则函数
     def view_rules(self):
@@ -344,11 +350,12 @@ class Window:
             self.entry_input.delete(0, "end")
         self.t.delete('1.0', tk.END)
 
-style = Style(theme='sandstone')
-# 切换主题，修改theme值即可:
-# ['vista', 'classic', 'cyborg', 'journal', 'darkly', 'flatly', 'clam']
-# ['alt', 'solar', 'minty', 'litera', 'united', 'xpnative', 'pulse']
-# ['cosmo', 'lumen', 'yeti', 'superhero', 'winnative', 'sandstone', 'default']
-window = style.master
-Window(window)
-window.mainloop()
+if __name__ == "__main__":
+    style = Style(theme='sandstone')
+    # 切换主题，修改theme值即可:
+    # ['vista', 'classic', 'cyborg', 'journal', 'darkly', 'flatly', 'clam']
+    # ['alt', 'solar', 'minty', 'litera', 'united', 'xpnative', 'pulse']
+    # ['cosmo', 'lumen', 'yeti', 'superhero', 'winnative', 'sandstone', 'default']
+    window = style.master
+    Window(window)
+    window.mainloop()

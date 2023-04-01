@@ -48,9 +48,8 @@ class Control:
             # 遍历规则库
             while True:
                 for r in rules:  # r代表一个规则对象
-                    if r.get_is_use() == 0 and check.check_rule2(facts, r.get_Result()) == 1:
+                    if r.get_is_use() == 0 and check.check_rule1(facts, r.get_condition()) == 1:
                         r.set_is_use(1)  # 匹配成功，标注该规则已匹配过
-
                         facts.append(r.get_Result())  # 将结论加入事实库
                         condition = r.get_condition()  # 获取规则r的前提条件
                         # 保存中间推理过程，列表
