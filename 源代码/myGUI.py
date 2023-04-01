@@ -115,7 +115,7 @@ class Window:
     def forward_inference(self):
         self.t.delete(1.0, 'end')
         if self.entry_input.get() == '':
-            messagebox.showerror(title="输入为空！", message="请输入后在进行推理！")
+            messagebox.showerror(title="输入为空！", message="请输入后再进行推理！")
         else:
             self.add_record()
             a = Control()
@@ -143,7 +143,7 @@ class Window:
     def backward_inference(self):
         self.t.delete(1.0, 'end')
         if self.entry_input.get() == '':
-            messagebox.showerror(title="输入为空！", message="请输入后在进行推理！")
+            messagebox.showerror(title="输入为空！", message="请输入后再进行推理！")
         else:
             self.add_record()
             a = Control()
