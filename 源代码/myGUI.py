@@ -157,6 +157,19 @@ class Window:
                         self.t.insert('end', ans[i][j] + '\n')
             self.t.insert('end', "推理得到的最终结果：")
             self.t.insert('end', ans[0][0] + "-->")
+            result = []  # 建立一个结果的列表
+            for i in range(lens_ans):
+                result.append(ans[i][0])  # 它存放了所有可以进一步分解的事实
+            # print(result)
+            for i in range(lens_ans):
+                lens_temp = len(ans[i])  # 保存每一条结论的字段数
+                for j in range(lens_temp):  # 遍历每一条结论的每一个字段
+                    if ans[i][j] not in result:  # 剔除掉可以进一步分解的事实
+                        if i != lens_ans - 1 or j != lens_temp - 1:  # 如果不是最后一个，输出该事实 + '+'
+                            self.t.insert('end', ans[i][j] + '+')
+                        else:
+                            self.t.insert('end', ans[i][j])  # 最后一个事实不需要再加'+'
+
 
 
 
