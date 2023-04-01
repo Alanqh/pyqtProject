@@ -99,7 +99,6 @@ class Control:
             # 获取事实库，你新输入的那些事实
             cursor.execute(sql2)
             rule_all = cursor.fetchall()  # 获取规则库，所有规则
-            print(rule_all)
             cursor.close()
             for rule in rule_all:
                 r = Rule()
