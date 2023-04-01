@@ -226,7 +226,7 @@ class Window:
                 messagebox.showerror(title="规则不存在！", message="您要修改的规则编号不存在！请重新输入编号")
             else:
             # SQL 更新语句(修改)
-                sql = "UPDATE RULES SET CONDITIONS='%s/'," \
+                sql = "UPDATE RULES SET CONDITIONS='%s'," \
                     "RESULT='%s' WHERE R_ID = %s" % (conditions, result, r_id)
 
             try:
@@ -346,7 +346,7 @@ class Window:
     # 一键清空函数
     def clear_all(self):
         # 清空所有文本框
-        if self.entry_input.get() != "请输入结果或事实，例如：有翅膀/鸟类":
+        if self.entry_input.get() != "有奶/吃肉":
             self.entry_input.delete(0, "end")
         self.t.delete('1.0', tk.END)
 
